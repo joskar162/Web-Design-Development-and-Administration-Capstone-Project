@@ -1,0 +1,26 @@
+# IDE and Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Backup files
+*.bak
+*~
+
+# PHP
+*.cache
+
+# Don't ignore the config file (students need to see it)
+# But you might want to ignore it in production
+# config/config.php
