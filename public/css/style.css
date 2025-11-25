@@ -4,9 +4,9 @@
 
 /* Variables for consistent theming */
 :root {
-    --primary-color: #4a6fa5;
-    --secondary-color: #166088;
-    --accent-color: #4fc3f7;
+    --primary-color: #126df7;
+    --secondary-color: #120ee0;
+    --accent-color: #2d30e2da;
     --light-color: #f8f9fa;
     --dark-color: #343a40;
     --danger-color: #dc3545;
@@ -22,7 +22,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
-    color: #333;
+    color: #151616;
 }
 
 /* TODO: Style the login page */
@@ -30,7 +30,8 @@ body {
     background-color: var(--light-color);
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(42, 19, 252, 0.822);
+    background-color: rgb(23, 10, 211);
     width: 100%;
     max-width: 400px;
     display: flex;
@@ -44,7 +45,7 @@ body {
     background-color: var(--light-color);
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(253, 60, 60, 0.829);
     width: 100%;
     max-width: 400px;
 }
