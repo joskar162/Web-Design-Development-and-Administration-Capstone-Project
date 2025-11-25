@@ -1,8 +1,18 @@
 <?php
 // TODO: Include config file
-
+require_once(__DIR__ . '/config.php');
 
 // TODO: If already logged in, redirect to dashboard
+if (isLoggedIn()) {
+    $role = $_SESSION['role'];
+    if ($role === 'student') {
+        header("Location: dashboard_student.php");
+        exit();
+    } elseif ($role === 'lecturer') {
+        header("Location: dashboard_lecturer.php");
+        exit();
+    }
+}
 
 
 // TODO: Handle login form submission
