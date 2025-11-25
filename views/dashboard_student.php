@@ -77,6 +77,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['drop_class'])) {
 
 
 // TODO: Get student's enrolled classes
+$enrolled_classes_sql = "
+    SELECT c.*, l.name AS lecturer_name, e.grade
+    FROM classes c
+    JOIN enrollments e ON c.id = e.class_id
+    JOIN users l ON c.lecturer_id = l.id
+    WHERE e.student_id = {$_SESSION['user_id']} AND e.status = 'active'
+";
+$enrolled_classes_result = $conn->query($enrolled_classes_sql);
 
 
 // TODO: Get available classes (not enrolled, not full)
