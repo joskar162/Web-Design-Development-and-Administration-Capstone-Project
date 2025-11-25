@@ -1,9 +1,11 @@
 <?php
 // TODO: Include config and require student role
-
+require_once(__DIR__ . '/../config.php');
+requireLogin();
+requireRole('student');
 
 // TODO: Get enrollment_id from URL parameter
-
+$enrollment_id = isset($_GET['enrollment_id']) ? intval($_GET['enrollment_id']) : 0;
 
 // TODO: Verify student owns this enrollment
 
