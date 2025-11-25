@@ -75,8 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             <h2>Login</h2>
             
             <!-- TODO: Display error messages if login fails -->
+             <?php if (isset($error)): ?>
+                <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
+            <?php endif; ?>
             
             <!-- TODO: Create login form with username and password fields -->
+             
             <form method="POST" action="">
                 <!-- Add form fields here -->
             </form>
