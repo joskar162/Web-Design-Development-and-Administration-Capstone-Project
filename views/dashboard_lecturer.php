@@ -85,6 +85,12 @@ include 'header.php';
     <h2>My Classes</h2>
     
     <!-- TODO: Display success/error messages -->
+     <?php if (isset($success)): ?>
+          <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+     <?php endif; ?>
+     <?php if (isset($error)): ?>
+          <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+     <?php endif; ?>
     
     <!-- TODO: Add "Create New Class" button -->
     
