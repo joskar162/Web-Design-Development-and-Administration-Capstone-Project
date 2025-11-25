@@ -52,9 +52,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_class'])) {
         
 
 // TODO: Handle class deletion
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_class'])) {
+    $class_id = $_POST['class_id'];
+
+    // Delete the class from the database
+    $delete_sql = "DELETE FROM classes WHERE id = $class_id AND lecturer_id = {$_SESSION['user_id']}";
+
+    if (mysqli_query($conn, $delete_sql)) {
+        $success = "Class deleted successfully!";
+    } else {
+        $error = "Error deleting class: " . mysqli_error($conn);
+    }
+}
 
 
 // TODO: Get lecturer's classes from database
+$classes_sql = "
+    SELECT c.*, 
+        (SELECT COUNT(*) FROM enrollments e WHERE e.class_id = c.id AND e.status = 'active') AS enrolled_count
+    FROM classes c
+    WHERE c.lecturer_id = {$_SESSION['user_id']}
+";
+$classes_result = mysqli_query($conn, $classes_sql);
+
+
 
 
 include 'header.php';
