@@ -88,6 +88,17 @@ $enrolled_classes_result = $conn->query($enrolled_classes_sql);
 
 
 // TODO: Get available classes (not enrolled, not full)
+$available_classes_sql = "
+    SELECT c.*, l.name AS lecturer_name,
+           (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id AND status = 'active') AS enrolled_count
+    FROM classes c
+    JOIN users l ON c.lecturer_id = l.id
+    WHERE c.id NOT IN (
+        SELECT class_id FROM enrollments WHERE student_id = {$_SESSION['user_id']} AND status = 'active'
+    )
+    AND (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id AND status = 'active') < c.capacity
+";
+$available_classes_result = $conn->query($available_classes_sql);
 
 
 include 'header.php';
