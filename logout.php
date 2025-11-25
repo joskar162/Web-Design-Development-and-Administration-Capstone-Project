@@ -1,6 +1,6 @@
 <?php
-// TODO: Include config file
-require_once(__DIR__ . '/config.php');
+// Include config file
+require_once(__DIR__ . '/config/config.php');
 
 
 // TODO: Destroy session

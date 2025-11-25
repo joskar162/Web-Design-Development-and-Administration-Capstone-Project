@@ -1,7 +1,7 @@
 <?php
 // TODO: Include config and require lecturer role
 
-require_once(__DIR__ . '/../config.php');
+require_once(__DIR__ . '/../config/config.php');
 requireLogin();
 requireRole('lecturer');
 // TODO: Get class_id from URL parameter

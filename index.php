@@ -1,7 +1,6 @@
 <?php
-// TODO: Include config file
-require_once(__DIR__ . '/config.php');
-
+// Include config file
+require_once __DIR__ . '/config/config.php';
 // TODO: Check if user is logged in
 // If logged in, redirect to appropriate dashboard based on role
 // If not logged in, redirect to login page

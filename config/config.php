@@ -1,5 +1,8 @@
 <?php
-// TODO: Start session
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 // Database configuration
@@ -10,10 +13,11 @@ $db = 'dcma';
 
 // TODO: Create database connection
 
-$conn = mysqli_connect($host, $user, $pass, $db);
+// Create mysqli connection (object-style)
+$conn = new mysqli($host, $user, $pass, $db);
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 // TODO: Check connection and handle errors
@@ -25,10 +29,10 @@ mysqli_set_charset($conn, "utf8");
 
 
 
-// TODO: Create helper functions
+// Helper functions
 function sanitize($data) {
     global $conn;
-    return mysqli_real_escape_string($conn, $data);
+    return $conn->real_escape_string($data);
 }
 
 // - isLoggedIn(): Check if user is logged in
@@ -56,9 +60,6 @@ function requireRole($role) {
 }
 // - sanitize($data): Sanitize user input to prevent SQL injection
  
-function sanitize($data) {
-    global $conn;
-    return mysqli_real_escape_string($conn, $data);
-}
+// (Sanitize already defined earlier)
 
 ?>
