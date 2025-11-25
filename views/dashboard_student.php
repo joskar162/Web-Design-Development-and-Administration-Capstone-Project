@@ -108,15 +108,40 @@ include 'header.php';
     <h2>My Enrolled Classes</h2>
     
     <!-- TODO: Display success/error messages -->
+     <?php if (isset($_SESSION['message'])): ?>
+          <div class="alert alert-<?php echo htmlspecialchars($_SESSION['message_type']); ?>">
+              <?php 
+                  echo htmlspecialchars($_SESSION['message']); 
+                  unset($_SESSION['message']);
+                  unset($_SESSION['message_type']);
+              ?>
+          </div>
+     <?php endif; ?>
     
     <!-- TODO: Display enrolled classes in a grid -->
-    <!-- Each class card should show:
+      <!-- Each class card should show:
          - Class code and name
          - Description
          - Lecturer name
          - Schedule and room
          - Grade (if assigned)
          - View Details and Drop Class buttons -->
+     
+     <?php while ($class = mysqli_fetch_assoc($enrolled_classes_result)): ?>
+        <div class="class-card">
+            <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
+            <p><?php echo htmlspecialchars($class['description']); ?></p>
+            <p>Lecturer: <?php echo htmlspecialchars($class['lecturer_name']); ?></p>
+            <p>Schedule: <?php echo htmlspecialchars($class['schedule']); ?></p>
+            <p>Room: <?php echo htmlspecialchars($class['room']); ?></p>
+            <?php if ($class['grade']): ?>
+                <p>Grade: <?php echo htmlspecialchars($class['grade']); ?></p>
+            <?php endif; ?>
+            <a href="class_view.php?class_id=<?php echo $class['id']; ?>" class="btn">View Details</a>
+            <a href="drop_class.php?class_id=<?php echo $class['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to drop this class?');">Drop Class</a>
+        </div>
+    <?php endwhile; ?>
+   
     
     <h2>Available Classes</h2>
     
@@ -128,6 +153,17 @@ include 'header.php';
          - Schedule and room
          - Enrolled count / max students
          - Enroll button -->
+     <?php while ($class = mysqli_fetch_assoc($available_classes_result)): ?>
+        <div class="class-card">
+            <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
+            <p><?php echo htmlspecialchars($class['description']); ?></p>
+            <p>Lecturer: <?php echo htmlspecialchars($class['lecturer_name']); ?></p>
+            <p>Schedule: <?php echo htmlspecialchars($class['schedule']); ?></p>
+            <p>Room: <?php echo htmlspecialchars($class['room']); ?></p>
+            <p>Enrolled: <?php echo $class['enrolled_count']; ?> / <?php echo $class['capacity']; ?> students</p>
+            <a href="enroll.php?class_id=<?php echo $class['id']; ?>" class="btn">Enroll</a>
+        </div>
+    <?php endwhile; ?>
     
 </div>
 
