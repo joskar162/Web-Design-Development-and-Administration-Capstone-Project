@@ -11,8 +11,45 @@ requireRole('lecturer');
 // 3. Insert into database
 // 4. Show success/error message
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_class'])) {
+    // Get form data
+    $class_code = $_POST['class_code'];
+    $class_name = $_POST['class_name'];
+    $description = $_POST['description'];
+    $max_students = $_POST['max_students'];
+    $schedule_day = $_POST['schedule_day'];
+    $schedule_time = $_POST['schedule_time'];
+    $room = $_POST['room'];
 
+    // Validate input
+    if (empty($class_code) || empty($class_name) || empty($max_students) || empty($schedule_day) || empty($schedule_time) || empty($room)) {
+        $error = "All fields are required.";
+    } else {
+        // Insert into database
+            $insert_sql = "INSERT INTO classes (class_code, name, description, lecturer_id, max_students, schedule_day, schedule_time, room) 
+                           VALUES ('$class_code', '$class_name', '$description', {$_SESSION['user_id']}, $max_students, '$schedule_day', '$schedule_time', '$room')";
+        if (mysqli_query($conn, $insert_sql)) {
+            $success = "Class created successfully!";
+        } else {
+            $error = "Error creating class: " . mysqli_error($conn);
+        }
+    }
+}
+     // Show success/error message
+     
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_class'])) {
+    $class_id = $_POST['class_id'];
 
+    // Delete the class from the database
+    $delete_sql = "DELETE FROM classes WHERE id = $class_id AND lecturer_id = {$_SESSION['user_id']}";
+
+    if (mysqli_query($conn, $delete_sql)) {
+        $success = "Class deleted successfully!";
+    } else {
+        $error = "Error deleting class: " . mysqli_error($conn);
+    }
+}
+        
 
 // TODO: Handle class deletion
 
