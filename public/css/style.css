@@ -2,6 +2,16 @@
 
 /* TODO: Add your custom styles here */
 
+/* Variables for consistent theming */
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4fc3f7;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --danger-color: #dc3545;
+}
+
 /* Basic Reset */
 * {
     margin: 0;
@@ -17,83 +27,205 @@ body {
 
 /* TODO: Style the login page */
 .login-container {
-    /* Add styles for centering login box */
+    background-color: var(--light-color);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .login-box {
     /* Add styles for login form container */
+    background-color: var(--light-color);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
 }
 
 /* TODO: Style the header */
 .main-header {
     /* Add styles for main header */
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header-content {
     /* Add styles for header content layout */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 /* TODO: Style the dashboard */
 .dashboard {
     /* Add styles for dashboard container */
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    width: 100%;
 }
 
 /* TODO: Style forms */
 .form-group {
     /* Add styles for form groups */
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
 }
 
 .form-group label {
     /* Add styles for labels */
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.5rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     /* Add styles for form inputs */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* TODO: Style buttons */
 .btn {
     /* Add base button styles */
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
 }
 
 .btn-primary {
     /* Add primary button styles */
+    background-color: var(--primary-color);
+    color: white;
+    &:hover {
+        background-color: darken($primary-color, 10%);
+    }
 }
 
 .btn-secondary {
     /* Add secondary button styles */
+    background-color: var(--secondary-color);
+    color: white;
+    &:hover {
+        background-color: darken($secondary-color, 10%);
+    }
 }
 
 .btn-danger {
     /* Add danger button styles */
+    background-color: var(--danger-color);
+    color: white;
+    &:hover {
+        background-color: darken($danger-color, 10%);
+    }
 }
 
 /* TODO: Style class cards */
 .classes-grid {
     /* Add grid layout for classes */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
 
 .class-card {
     /* Add styles for individual class cards */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
 }
 
 /* TODO: Style tables */
 .data-table {
     /* Add styles for data tables */
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 /* TODO: Style messages */
 .error-message {
     /* Add styles for error messages */
+    color: var(--danger-color);
+    background-color: rgba(255, 0, 0, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
 }
 
 .success-message {
     /* Add styles for success messages */
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
 }
 
 /* TODO: Add responsive design for mobile devices */
 @media (max-width: 768px) {
     /* Add mobile-friendly styles */
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .classes-grid {
+        grid-template-columns: 1fr;
+    }
 }
