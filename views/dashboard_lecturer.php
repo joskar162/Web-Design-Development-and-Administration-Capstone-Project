@@ -93,11 +93,34 @@ include 'header.php';
      <?php endif; ?>
     
     <!-- TODO: Add "Create New Class" button -->
+     <button id="create-class-btn" class="btn">Create New Class</button>
+
     
     <!-- TODO: Create class creation form (hidden by default) -->
-    <!-- Form fields: class_code, class_name, description, max_students, 
+       <!-- Form fields: class_code, class_name, description, max_students, 
          schedule_day, schedule_time, room -->
-    
+
+     <div id="create-class-form" style="display: none;">
+        <h3>Create New Class</h3>
+        <form method="post" action="create_class.php">
+            <input type="text" name="class_code" required placeholder="Class Code">
+           <input type="text" name="class_name" required placeholder="Class Name">
+           <textarea name="description" placeholder="Description"></textarea>
+           <input type="number" name="max_students" required placeholder="Max Students">
+           <select name="schedule_day" required>
+               <option value="">Select Day</option>
+               <option value="Monday">Monday</option>
+               <option value="Tuesday">Tuesday</option>
+               <option value="Wednesday">Wednesday</option>
+               <option value="Thursday">Thursday</option>
+               <option value="Friday">Friday</option>
+           </select>
+           <input type="time" name="schedule_time" required>
+           <input type="text" name="room" required placeholder="Room">
+           <button type="submit" class="btn">Create Class</button>
+        </form>
+    </div>  
+         
     <!-- TODO: Display lecturer's classes in a grid -->
     <!-- Each class card should show:
          - Class code and name
@@ -105,10 +128,28 @@ include 'header.php';
          - Schedule and room
          - Enrolled count / max students
          - View Details and Delete buttons -->
+     <div class="class-grid">
+        <?php while ($class = mysqli_fetch_assoc($classes_result)): ?>
+            <div class="class-card">
+                <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
+                <p><?php echo htmlspecialchars($class['description']); ?></p>
+                <p>Schedule: <?php echo htmlspecialchars($class['schedule']); ?></p>
+                <p>Room: <?php echo htmlspecialchars($class['room']); ?></p>
+                <p>Enrolled: <?php echo $class['enrolled_count']; ?> / <?php echo $class['capacity']; ?> students</p>
+                <a href="class_details.php?class_id=<?php echo $class['id']; ?>" class="btn">View Details</a>
+                <a href="delete_class.php?class_id=<?php echo $class['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
+            </div>
+        <?php endwhile; ?>
+    </div>
     
 </div>
 
 <!-- TODO: Add JavaScript for toggling create class form -->
+<script>
+document.getElementById('create-class-btn').addEventListener('click', function() {
+    document.getElementById('create-class-form').classList.toggle('hidden');
+});
+</script>
 
 </body>
 </html>
