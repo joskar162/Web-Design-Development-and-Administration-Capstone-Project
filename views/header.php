@@ -12,7 +12,9 @@
             <h1>Dynamic Class Management</h1>
             <nav>
                 <!-- TODO: Display logged in user's name and role -->
+                <span>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?> (<?php echo htmlspecialchars($_SESSION['role']); ?>)</span>
                 <!-- TODO: Add logout button -->
+                <a href="logout.php" class="btn btn-logout">Logout</a>
             </nav>
         </div>
     </header>
