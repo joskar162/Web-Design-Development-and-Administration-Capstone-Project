@@ -79,13 +79,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
             <?php endif; ?>
             
-            <!-- TODO: Create login form with username and password fields -->
-             
+            <!-- TODO: Create login form with username and password fields -->         
+
             <form method="POST" action="">
                 <!-- Add form fields here -->
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit" name="login">Login</button>
             </form>
             
             <!-- TODO: Add demo credentials display -->
+            <div class="demo-credentials">
+                <h3>Demo Credentials</h3>
+                <p><strong>Student:</strong> username: student1 | password: studentpass</p>
+                <p><strong>Lecturer:</strong> username: lecturer1 | password: lecturerpass</p>
         </div>
     </div>
 </body>
