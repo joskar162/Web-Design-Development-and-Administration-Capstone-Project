@@ -55,6 +55,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll_class'])) {
 }
 
 // TODO: Handle drop class
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['drop_class'])) {
+    $class_id = intval($_POST['class_id']);
+    $student_id = $_SESSION['user_id'];
+
+    // Delete enrollment record
+    $drop_sql = "DELETE FROM enrollments WHERE student_id = ? AND class_id = ?";
+    $drop_stmt = $conn->prepare($drop_sql);
+    $drop_stmt->bind_param("ii", $student_id, $class_id);
+
+    if ($drop_stmt->execute()) {
+        $_SESSION['message'] = "Successfully dropped the class!";
+        $_SESSION['message_type'] = "success";
+    } else {
+        $_SESSION['message'] = "Error dropping class: " . $conn->error;
+        $_SESSION['message_type'] = "error";
+    }
+    header("Location: dashboard_student.php");
+    exit();
+}
 
 
 // TODO: Get student's enrolled classes
