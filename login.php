@@ -21,6 +21,42 @@ if (isLoggedIn()) {
 // 3. Verify password (use password_verify if using password_hash)
 // 4. Set session variables
 // 5. Redirect to appropriate dashboard
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Query database for user
+    $sql = "SELECT * FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+        // Verify password
+        if (password_verify($password, $user['password'])) {
+            // Set session variables
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['name'];
+            $_SESSION['role'] = $user['role'];
+
+            // Redirect to appropriate dashboard
+            if ($user['role'] === 'student') {
+                header("Location: dashboard_student.php");
+                exit();
+            } elseif ($user['role'] === 'lecturer') {
+                header("Location: dashboard_lecturer.php");
+                exit();
+            }
+        } else {
+            $error = "Invalid username or password.";
+        }
+    } else {
+        $error = "Invalid username or password.";
+    }
+}
+
 
 
 ?>
