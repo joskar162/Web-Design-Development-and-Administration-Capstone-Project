@@ -1,5 +1,8 @@
 <?php
 // TODO: Include config and require lecturer role
+require_once(__DIR__ . '/../config.php');
+requireLogin();
+requireRole('lecturer');
 
 
 // TODO: Handle class creation form submission
@@ -7,6 +10,8 @@
 // 2. Validate input
 // 3. Insert into database
 // 4. Show success/error message
+
+
 
 
 // TODO: Handle class deletion
