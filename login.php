@@ -51,6 +51,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 $db_role = $row['role'];
                 $password_ok = !empty($db_password_hash) && (password_verify($password, $db_password_hash) || $password === $db_password_hash);
                 if ($password_ok) {
+                    // If the stored password matched by direct equality (legacy plain-text), re-hash and update DB
+                    if ($password === $db_password_hash) {
+                        $newHash = password_hash($password, PASSWORD_DEFAULT);
+                        $safeHash = $conn->real_escape_string($newHash);
+                        $safeId = intval($db_id);
+                        if (!$conn->query("UPDATE users SET password = '{$safeHash}' WHERE id = {$safeId}")) {
+                            error_log('Failed to update password hash for user id ' . $safeId . ': ' . $conn->error);
+                        } else {
+                            error_log('Re-hashed password for user id ' . $safeId . ' after legacy login (fallback).');
+                        }
+                    }
                     // Set session variables
                     $_SESSION['user_id'] = $db_id;
                     $_SESSION['user_name'] = $db_full_name;
@@ -63,8 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                         exit();
                     }
                 } else {
+                    error_log(sprintf('Login failed for username "%s": password mismatch (fallback)', $username));
                     $error = 'Invalid username or password.';
                 }
+            } else {
+                error_log(sprintf('Login failed for username "%s": user not found (fallback)', $username));
             }
         } else {
             $stmt->bind_param('s', $username);
@@ -82,6 +96,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                         $password_ok = true;
                     }
                     if ($password_ok) {
+                        // Re-hash legacy plain-text passwords if matched directly
+                        if ($password === $db_password_hash) {
+                            $newHash = password_hash($password, PASSWORD_DEFAULT);
+                            $safeHash = $conn->real_escape_string($newHash);
+                            $safeId = intval($db_id);
+                            if (!$conn->query("UPDATE users SET password = '{$safeHash}' WHERE id = {$safeId}")) {
+                                error_log('Failed to update password hash for user id ' . $safeId . ': ' . $conn->error);
+                            } else {
+                                error_log('Re-hashed password for user id ' . $safeId . ' after legacy login (prepared).');
+                            }
+                        }
                         // Set session variables
                         $_SESSION['user_id'] = $db_id;
                         $_SESSION['user_name'] = $db_full_name;
@@ -96,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                             exit();
                         }
                     } else {
+                        error_log(sprintf('Login failed for username "%s": password mismatch (prepared)', $username));
                         $error = 'Invalid username or password.';
                     }
                 } else {
