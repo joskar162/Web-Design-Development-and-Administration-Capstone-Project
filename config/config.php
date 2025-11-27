@@ -4,6 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Development debug mode; set to false on production
+if (!defined('DEBUG')) {
+    define('DEBUG', true);
+}
+
 
 $sqlFilePath = __DIR__ . '/../database/dcma_template.sql';
 
@@ -51,6 +56,29 @@ if (!$conn->select_db($db)) {
                 } while ($conn->more_results() && $conn->next_result());
             }
         }
+    }
+}
+
+// After attempting to import schema, check if 'users' table exists; if not, create minimal structure and demo accounts
+$usersCheck = $conn->query("SHOW TABLES LIKE 'users'");
+if (!$usersCheck || $usersCheck->num_rows === 0) {
+    // Create a minimal users table to allow login and seed demo users
+    $createUsers = "CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        full_name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        role ENUM('student','lecturer') NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
+    if (!$conn->query($createUsers)) {
+        error_log('Failed to create users table: ' . $conn->error);
+    } else {
+        // Seed demo credentials if not present
+        $conn->query("INSERT IGNORE INTO users (username, password, full_name, email, role) VALUES
+            ('student1', 'studentpass', 'Demo Student', 'student1@example.com', 'student'),
+            ('lecturer1', 'lecturerpass', 'Demo Lecturer', 'lecturer1@example.com', 'lecturer')");
     }
 }
 

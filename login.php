@@ -32,8 +32,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $sql = "SELECT id, username, password, full_name, email, role FROM users WHERE username = ? LIMIT 1";
         $stmt = $conn->prepare($sql);
         if ($stmt === false) {
-            error_log('DB prepare failed: ' . $conn->error);
-            $error = 'Internal server error. Please try again later.';
+            // Log the error for the developer
+            $dberr = $conn->error ?? 'unknown error';
+            error_log('DB prepare failed: ' . $dberr);
+            // If in DEBUG mode provide more info on-screen; otherwise show a generic message
+            $error = defined('DEBUG') && DEBUG ? 'DB error: ' . htmlspecialchars($dberr) : 'Internal server error. Please try again later.';
+            // Fallback: Try a safe non-prepared query using real_escape_string
+            $usernameEsc = $conn->real_escape_string($username);
+            $fallbackSql = "SELECT id, username, password, full_name, email, role FROM users WHERE username = '" . $usernameEsc . "' LIMIT 1";
+            $fallbackResult = $conn->query($fallbackSql);
+            if ($fallbackResult && $fallbackResult->num_rows === 1) {
+                $row = $fallbackResult->fetch_assoc();
+                $db_id = $row['id'];
+                $db_username = $row['username'];
+                $db_password_hash = $row['password'];
+                $db_full_name = $row['full_name'];
+                $db_email = $row['email'];
+                $db_role = $row['role'];
+                $password_ok = !empty($db_password_hash) && (password_verify($password, $db_password_hash) || $password === $db_password_hash);
+                if ($password_ok) {
+                    // Set session variables
+                    $_SESSION['user_id'] = $db_id;
+                    $_SESSION['user_name'] = $db_full_name;
+                    $_SESSION['role'] = $db_role;
+                    if ($db_role === 'student') {
+                        header('Location: dashboard_student.php');
+                        exit();
+                    } elseif ($db_role === 'lecturer') {
+                        header('Location: dashboard_lecturer.php');
+                        exit();
+                    }
+                } else {
+                    $error = 'Invalid username or password.';
+                }
+            }
         } else {
             $stmt->bind_param('s', $username);
             if (!$stmt->execute()) {
