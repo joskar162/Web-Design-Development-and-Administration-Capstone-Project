@@ -22,38 +22,56 @@ if (isLoggedIn()) {
 // 4. Set session variables
 // 5. Redirect to appropriate dashboard
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-    // Query database for user
-    $sql = "SELECT * FROM users WHERE username = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-        // Verify password
-        if (password_verify($password, $user['password'])) {
-            // Set session variables
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_name'] = $user['name'];
-            $_SESSION['role'] = $user['role'];
-
-            // Redirect to appropriate dashboard
-            if ($user['role'] === 'student') {
-                header("Location: dashboard_student.php");
-                exit();
-            } elseif ($user['role'] === 'lecturer') {
-                header("Location: dashboard_lecturer.php");
-                exit();
-            }
-        } else {
-            $error = "Invalid username or password.";
-        }
+    if ($username === '' || $password === '') {
+        $error = 'Please enter username and password.';
     } else {
-        $error = "Invalid username or password.";
+        // Prepared statement to get user by username
+        $sql = "SELECT id, username, password, full_name, email, role FROM users WHERE username = ? LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        if ($stmt === false) {
+            error_log('DB prepare failed: ' . $conn->error);
+            $error = 'Internal server error. Please try again later.';
+        } else {
+            $stmt->bind_param('s', $username);
+            if (!$stmt->execute()) {
+                error_log('DB execute failed: ' . $stmt->error);
+                $error = 'Internal server error. Please try again later.';
+            } else {
+                $stmt->store_result();
+                if ($stmt->num_rows === 1) {
+                    $stmt->bind_result($db_id, $db_username, $db_password_hash, $db_full_name, $db_email, $db_role);
+                    $stmt->fetch();
+                    // Verify password; support both password_hash and plain-text for legacy seed data
+                    $password_ok = false;
+                    if (!empty($db_password_hash) && (password_verify($password, $db_password_hash) || $password === $db_password_hash)) {
+                        $password_ok = true;
+                    }
+                    if ($password_ok) {
+                        // Set session variables
+                        $_SESSION['user_id'] = $db_id;
+                        $_SESSION['user_name'] = $db_full_name;
+                        $_SESSION['role'] = $db_role;
+
+                        // Redirect to appropriate dashboard
+                        if ($db_role === 'student') {
+                            header('Location: dashboard_student.php');
+                            exit();
+                        } elseif ($db_role === 'lecturer') {
+                            header('Location: dashboard_lecturer.php');
+                            exit();
+                        }
+                    } else {
+                        $error = 'Invalid username or password.';
+                    }
+                } else {
+                    $error = 'Invalid username or password.';
+                }
+            }
+            $stmt->close();
+        }
     }
 }
 
