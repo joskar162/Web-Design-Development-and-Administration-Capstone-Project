@@ -75,11 +75,11 @@ CREATE TABLE IF NOT EXISTS attendance (
 -- Add some sample enrollments
 
 INSERT INTO users (username, password, full_name, email, role) VALUES
-('p.murithi', 'pk1234.', 'Dr. peter murithi', 'peter.murithi@university.edu', 'lecturer'),
-('j.karani', 'jk1234.', 'Prof.joshua karani', 'joshua.karani@university.edu', 'lecturer'),
-('C.Brown', 'Cb1234.', 'Charlie Brown', 'charlie.brown@student.edu', 'student'),
-('D.Prince', 'Dp1234.', 'Diana Prince', 'diana.prince@student.edu', 'student'),
-('E.Hunt', 'Eh1234.', 'Ethan Hunt', 'ethan.hunt@student.edu', 'student');
+('lecturer1', 'lecturerpass', 'Alice Johnson', 'alice@gmail.com', 'lecturer'),
+('lecturer2', 'lecturerpass2', 'Bob Smith', 'bob@gmail.com', 'lecturer'),
+('student1', 'studentpass1', 'Charlie Brown', 'charlie@gmail.com', 'student'),
+('student2', 'studentpass2', 'Diana Prince', 'diana@gmail.com', 'student'),
+('student3', 'studentpass3', 'Ethan Hunt', 'ethan@gmail.com', 'student');
 
 INSERT INTO classes (class_code, name, description, lecturer_id, schedule, room, capacity) VALUES
 ('CS101', 'Introduction to Computer Science', 'Basic concepts of computer science', 1, 'Mon/Wed 10:00-11:30', 'Room 101', 30),
