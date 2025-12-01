@@ -6,11 +6,13 @@ require_once(__DIR__ . '/config/config.php');
 if (isLoggedIn()) {
     $role = $_SESSION['role'];
     if ($role === 'student') {
-        header("Location: dashboard_student.php");
+        header("Location: views/dashboard_student.php");
+exit();
+
         exit();
     } elseif ($role === 'lecturer') {
-        header("Location: dashboard_lecturer.php");
-        exit();
+      header("Location: views/dashboard_lecturer.php");
+exit();
     }
 }
 
