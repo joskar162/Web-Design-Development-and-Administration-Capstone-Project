@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['enroll_class'])) {
             }
         }
     }
-    header("Location: dashboard_student.php");
+    header("Location: views/dashboard_student.php");
     exit();
 }
 
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['drop_class'])) {
         $_SESSION['message'] = "Error dropping class: " . $conn->error;
         $_SESSION['message_type'] = "error";
     }
-    header("Location: dashboard_student.php");
+    header("Location: views/dashboard_student.php");
     exit();
 }
 
