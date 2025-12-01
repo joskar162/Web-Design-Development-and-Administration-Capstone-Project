@@ -76,29 +76,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['drop_class'])) {
 }
 
 
-// TODO: Get student's enrolled classes
+// Get student's enrolled classes (use safe integer and check query result)
+$student_id = intval($_SESSION['user_id'] ?? 0);
 $enrolled_classes_sql = "
     SELECT c.*, l.name AS lecturer_name, e.grade
     FROM classes c
     JOIN enrollments e ON c.id = e.class_id
     JOIN users l ON c.lecturer_id = l.id
-    WHERE e.student_id = {$_SESSION['user_id']} AND e.status = 'active'
+    WHERE e.student_id = {$student_id} AND e.status = 'active'
 ";
 $enrolled_classes_result = $conn->query($enrolled_classes_sql);
+if ($enrolled_classes_result === false) {
+    error_log('Enrolled classes query failed: ' . $conn->error);
+    $enrolled_classes_result = null;
+}
 
 
 // TODO: Get available classes (not enrolled, not full)
+// Get available classes (not enrolled, not full)
 $available_classes_sql = "
     SELECT c.*, l.name AS lecturer_name,
            (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id AND status = 'active') AS enrolled_count
     FROM classes c
     JOIN users l ON c.lecturer_id = l.id
     WHERE c.id NOT IN (
-        SELECT class_id FROM enrollments WHERE student_id = {$_SESSION['user_id']} AND status = 'active'
+        SELECT class_id FROM enrollments WHERE student_id = {$student_id} AND status = 'active'
     )
     AND (SELECT COUNT(*) FROM enrollments WHERE class_id = c.id AND status = 'active') < c.capacity
 ";
 $available_classes_result = $conn->query($available_classes_sql);
+if ($available_classes_result === false) {
+    error_log('Available classes query failed: ' . $conn->error);
+    $available_classes_result = null;
+}
 
 
 include 'header.php';
@@ -127,7 +137,8 @@ include 'header.php';
          - Grade (if assigned)
          - View Details and Drop Class buttons -->
      
-     <?php while ($class = mysqli_fetch_assoc($enrolled_classes_result)): ?>
+     <?php if ($enrolled_classes_result): ?>
+         <?php while ($class = mysqli_fetch_assoc($enrolled_classes_result)): ?>
         <div class="class-card">
             <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
             <p><?php echo htmlspecialchars($class['description']); ?></p>
@@ -140,7 +151,10 @@ include 'header.php';
             <a href="class_view.php?class_id=<?php echo $class['id']; ?>" class="btn">View Details</a>
             <a href="drop_class.php?class_id=<?php echo $class['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to drop this class?');">Drop Class</a>
         </div>
-    <?php endwhile; ?>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No enrolled classes found.</p>
+    <?php endif; ?>
    
     
     <h2>Available Classes</h2>
@@ -153,7 +167,8 @@ include 'header.php';
          - Schedule and room
          - Enrolled count / max students
          - Enroll button -->
-     <?php while ($class = mysqli_fetch_assoc($available_classes_result)): ?>
+     <?php if ($available_classes_result): ?>
+         <?php while ($class = mysqli_fetch_assoc($available_classes_result)): ?>
         <div class="class-card">
             <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
             <p><?php echo htmlspecialchars($class['description']); ?></p>
@@ -163,7 +178,10 @@ include 'header.php';
             <p>Enrolled: <?php echo $class['enrolled_count']; ?> / <?php echo $class['capacity']; ?> students</p>
             <a href="enroll.php?class_id=<?php echo $class['id']; ?>" class="btn">Enroll</a>
         </div>
-    <?php endwhile; ?>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <p>No available classes found.</p>
+    <?php endif; ?>
     
 </div>
 

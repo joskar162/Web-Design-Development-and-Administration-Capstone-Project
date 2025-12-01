@@ -11,9 +11,13 @@
         <div class="header-content">
             <h1>Dynamic Class Management</h1>
             <nav>
-                <!-- TODO: Display logged in user's name and role -->
-                <span>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?> (<?php echo htmlspecialchars($_SESSION['role']); ?>)</span>
-                <!-- TODO: Add logout button -->
+                <!-- Display logged in user's name and role (guarded) -->
+                <?php
+                    $displayName = isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest';
+                    $displayRole = isset($_SESSION['role']) ? htmlspecialchars($_SESSION['role']) : '';
+                ?>
+                <span>Welcome, <?php echo $displayName; ?><?php echo $displayRole ? ' (' . $displayRole . ')' : ''; ?></span>
+                <!-- Logout button -->
                 <a href="../logout.php" class="btn btn-logout">Logout</a>
             </nav>
         </div>
