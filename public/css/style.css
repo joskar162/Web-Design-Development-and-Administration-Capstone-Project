@@ -33,8 +33,7 @@ body {
     box-shadow: 0 4px 6px rgba(42, 19, 252, 0.822);
     background-color: rgb(23, 10, 211);
     width: 100%;
-    max-width: 400px;
-    display: flex;
+      display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;

@@ -66,14 +66,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_class'])) {
 }
 
 
-// TODO: Get lecturer's classes from database
+// Get lecturer's classes from database (use safe integer and check query result)
+$lecturer_id = intval($_SESSION['user_id'] ?? 0);
 $classes_sql = "
     SELECT c.*, 
         (SELECT COUNT(*) FROM enrollments e WHERE e.class_id = c.id AND e.status = 'active') AS enrolled_count
     FROM classes c
-    WHERE c.lecturer_id = {$_SESSION['user_id']}
+    WHERE c.lecturer_id = {$lecturer_id}
 ";
-$classes_result = mysqli_query($conn, $classes_sql);
+$classes_result = $conn->query($classes_sql);
+if ($classes_result === false) {
+    error_log('Lecturer classes query failed: ' . $conn->error);
+    $classes_result = null;
+}
 
 
 
@@ -129,7 +134,8 @@ include 'header.php';
          - Enrolled count / max students
          - View Details and Delete buttons -->
      <div class="class-grid">
-        <?php while ($class = mysqli_fetch_assoc($classes_result)): ?>
+        <?php if ($classes_result): ?>
+            <?php while ($class = mysqli_fetch_assoc($classes_result)): ?>
             <div class="class-card">
                 <h3><?php echo htmlspecialchars($class['class_code']); ?> - <?php echo htmlspecialchars($class['name']); ?></h3>
                 <p><?php echo htmlspecialchars($class['description']); ?></p>
@@ -139,7 +145,10 @@ include 'header.php';
                 <a href="class_details.php?class_id=<?php echo $class['id']; ?>" class="btn">View Details</a>
                 <a href="delete_class.php?class_id=<?php echo $class['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this class?');">Delete</a>
             </div>
-        <?php endwhile; ?>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p>No classes found.</p>
+        <?php endif; ?>
     </div>
     
 </div>
