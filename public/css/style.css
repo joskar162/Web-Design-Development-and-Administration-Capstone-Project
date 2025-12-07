@@ -33,7 +33,7 @@ body {
     box-shadow: 0 4px 6px rgba(42, 19, 252, 0.822);
     background-color: rgb(23, 10, 211);
     width: 100%;
-      display: flex;
+   display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -46,11 +46,11 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(253, 60, 60, 0.829);
     width: 100%;
-    max-width: 400px;
+    max-width: 600px;
 }
 
 /* TODO: Style the header */
-.main-header {
+.main-header 
     /* Add styles for main header */
     background-color: var(--primary-color);
     color: white;
